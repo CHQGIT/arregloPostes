@@ -1,5 +1,8 @@
+  
 function loadPostes(Query, QueryTask, map, layers, rotulos){
-    
+
+
+
     var entregas = "";
     for (let index = 0; index < rotulos.length; index++) {
        
@@ -8,19 +11,21 @@ function loadPostes(Query, QueryTask, map, layers, rotulos){
     }
 
     var promise = new Promise((resolve,reject)=>{
-    
+        console.log(entregas)
+
         var qTaskInterruptions = new QueryTask(layers.pole_layer);
         var qInterruptions = new Query();
-        qInterruptions.returnGeometry = false;
+        qInterruptions.returnGeometry = true;
         qInterruptions.outFields=["*"];
         qInterruptions.where = entregas;
-        
+        qInterruptions.outSpatialReference = map.spatialReference;
+
         qTaskInterruptions.execute(qInterruptions, (featureSet)=>{
        
             if(!featureSet.features.length){
                 reject([]);
             }
-        
+           
             resolve(featureSet.features)
                 
             }, (Errorq)=>{

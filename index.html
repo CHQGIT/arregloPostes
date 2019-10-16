@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
-  <title>FeatureTable - Custom Menu Items</title>
+  <title>Arreglo postes</title>
   <link rel="stylesheet" href="https://js.arcgis.com/3.30/dijit/themes/claro/claro.css">
   <link rel="stylesheet" href="https://js.arcgis.com/3.30/esri/css/esri.css">
   <script src="https://js.arcgis.com/3.30/"></script>
@@ -23,7 +23,6 @@
   <script>
     require([
       "esri/layers/FeatureLayer",
-    
       "esri/geometry/Extent",
       "esri/graphicsUtils",
       "esri/tasks/query",
@@ -35,33 +34,68 @@
       "dojo/on",
       "dijit/layout/ContentPane",
       "dijit/layout/BorderContainer",
-      "esri/kernel"
+      "esri/kernel",
+      'esri/graphic',
+      'esri/layers/GraphicsLayer',
+      "esri/symbols/SimpleMarkerSymbol",
+      "esri/symbols/SimpleLineSymbol",
+      "esri/Color"
     ], function (
       FeatureLayer,  Extent, graphicsUtils, Query, QueryTask, Map,
-      dom, parser, ready, on, ContentPane, BorderContainer, kernel
+      dom, parser, ready, on, ContentPane, BorderContainer, kernel, Graphic, GraphicsLayer, SimpleMarkerSymbol, SimpleLineSymbol, Color
     ) {
 
       parser.parse();
-     
+  
       ready(function(){
         var map = new Map("map",{
           basemap: "topo", 
           center:[-71.7018, -33.0228], 
-          zoom:8
+          zoom:8,
+          spatialReference: 32719
+
         });
 
         //Load a FeatureTable to the application once map loads
         map.on("load", loadData);
-
+        var gLayerFind = new GraphicsLayer();
         function loadData(){
     
           var l = login(kernel)
             .then(resolve=>{
                 console.log(resolve)
+                var gLayerMedidor2 = new GraphicsLayer();
+                var r = Math.floor(Math.random() * 255);
+                var g = Math.floor(Math.random() * 255);
+                var b = Math.floor(Math.random() * 255);
+
+                var mySymbol = new esri.symbol.SimpleMarkerSymbol(
+                  esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 30,
+                new esri.symbol.SimpleLineSymbol(
+                esri.symbol.SimpleLineSymbol.STYLE_SOLID,
+                new esri.Color([0, 40, 255, 0.9]),
+                1
+                ),
+                new esri.Color([255, 51, 255, 0.7])
+                );
+        
+     
 
                 var p = loadPostes(Query,QueryTask, map, resolve[1], ["678742","678743"])
                 .then(resolve=>{
-                    console.log(resolve,"postes")
+                    console.log(resolve,"pipes")
+                    resolve.map((r , index ) =>{
+                      gLayerFind.add(new Graphic(resolve[index].geometry,mySymbol));
+                     
+                     
+                    });
+                    map.addLayer(gLayerFind,1);
+                   //
+                    
+                    // map.graphics.add(new Graphic(featureSet.features[0].geometry, mySymbol));
+                  
+           
+
                 }).catch(error=>{
                     console.log(error, "error postes")
                 })
