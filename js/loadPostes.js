@@ -1,8 +1,5 @@
   
 function loadPostes(Query, QueryTask, map, layers, rotulos){
-
-
-
     var entregas = "";
     for (let index = 0; index < rotulos.length; index++) {
        
@@ -32,7 +29,6 @@ function loadPostes(Query, QueryTask, map, layers, rotulos){
               console.log(Errorq,"Error doing query for rotulos");
               reject([]);
             });
-          
           
     });
         
