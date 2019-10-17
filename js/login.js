@@ -1,20 +1,12 @@
-/*
-var conf = ( () => {
-    var credentials = {
-      user: 'vialactea\\usrgis',
-      pass: 'N3L4y5HZ'
-    }
-    return () => {return credentials}
-  })();
-  */
+  //Add your credentials (domain: vialactea\user)
   var conf = ( () => {
     var credentials = {
-      user: 'vialactea\\ehernanr',
-      pass: 'Chilquinta19'
+      user: '',
+      pass: ''
     }
     return () => {return credentials}
   })();
-
+//Layers used on app
   var layers = ( ()=>{
       var layer = {
         token_layer: "https://gisredeo.chilquinta.cl/portal/sharing/rest/generatetoken",
@@ -23,13 +15,12 @@ var conf = ( () => {
      return () => {return layer} 
   })();
   
-
+//Login fx : get the token and register service layers for rest services.
 function login(kernel){
     return new Promise((resolve,reject)=>{
 
         const url = layers().token_layer;
         
-        //console.log(conf().pass, conf().user, layers())
         const data = {  
             "username": conf().user,  
             "password": conf().pass,  
@@ -53,16 +44,14 @@ function login(kernel){
                 "ssl": false,
                 "expires": 7200
             };
-
+            //Register token for the service for the next layers to be loaded
             kernel.id.registerToken(t);
-
             resolve([myToken.token, layers()])
         })
         .fail(error => {
             reject("Error obteniendo token", error)
         });
         
-        //console.log('gisred login done');
-        })
+    })
     
 };

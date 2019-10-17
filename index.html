@@ -55,19 +55,20 @@
           spatialReference: 32719
         });
 
-        //Load a FeatureTable to the application once map loads
+        //Load pole data to the application once map loads
         map.on("load", loadData);
         var gLayerFind = new GraphicsLayer();
         function loadData(){
-    
+          //It does login
           var l = login(kernel)
             .then(resolve=>{
                 console.log(resolve)
                 var gLayerMedidor2 = new GraphicsLayer();
+                //Setting up rgb colors
                 var r = Math.floor(Math.random() * 255);
                 var g = Math.floor(Math.random() * 255);
                 var b = Math.floor(Math.random() * 255);
-
+                //Symbol for graphic on map
                 var mySymbol = new esri.symbol.SimpleMarkerSymbol(
                   esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 30,
                 new esri.symbol.SimpleLineSymbol(
@@ -77,14 +78,16 @@
                 ),
                 new esri.Color([255, 51, 255, 0.7])
                 );
-        
+                //Load pole array for query
                 var p = loadPostes(Query,QueryTask, map, resolve[1], ["678742","678743"])
                 .then(resolve=>{
                     console.log(resolve,"pipes")
                     resolve.map((r , index ) =>{
+                       //Add graphics to graphiclayer 
                       gLayerFind.add(new Graphic(resolve[index].geometry,mySymbol));
                      
                     });
+                    //Add glayer to map
                     map.addLayer(gLayerFind,1);
 
                 }).catch(error=>{
